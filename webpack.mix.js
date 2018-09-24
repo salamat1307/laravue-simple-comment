@@ -14,6 +14,6 @@ let mix = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'public/js');
 
 mix.browserSync({
-    proxy: 'comment.pro',
+    proxy: 'your local proxy (like local.io)',
     open:false
 })
