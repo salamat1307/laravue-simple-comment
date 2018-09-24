@@ -3,6 +3,12 @@
 		<v-container grid-list-xl text-xs-center>
 		  	<v-layout row wrap>
 		  	  	<v-flex xs10 offset-xs1>
+		  	  		<v-alert color="red"		  	  			  
+					      :value="oops"
+					      type="error"
+					      v-html="error_text"
+					    >					     
+					</v-alert>
 		  	  		 <v-card>				        
 				        <v-card-title primary-title>				          				
 				            <v-textarea
@@ -10,9 +16,10 @@
 						          name="input-7-4"
 						          label="Добавить комментарий"
 						          v-model="data.text"
-						          @focus="startEditing"	              
-						    ></v-textarea>				          
-				        </v-card-title>
+						          @focus="startEditing"
+						          @keyup.enter="trigger"	              
+						    ></v-textarea>						    				
+				        </v-card-title>				        				
 				        <div v-show="state === 'editing'">
 					        <v-card-actions>
 					          <v-btn class="white--text" color="purple" @click="saveComment">Добавить</v-btn>
@@ -49,6 +56,8 @@
 		data() {
 			return {
 				state: 'default',
+				oops: false,
+				error_text: '',
 				data: {
 					text:''
 				},
@@ -67,6 +76,7 @@
 		methods:{
 			startEditing() {
 				this.state = 'editing'
+				this.oops = false
 			},
 
 			stopEditing() {
@@ -75,8 +85,7 @@
 			},
 
 			getComments() {
-				axios.get('/comments').then((response) => {
-					console.log(response.data.comments);
+				axios.get('/comments').then((response) => {					
 					this.comments = response.data.comments
 				}).catch(error => {
 					console.log('error');
@@ -85,13 +94,16 @@
 
 			saveComment() {
 				const _ = this
-
-				axios.post('/comments', _.data).then((response) => {
-					_.comments.unshift(response.data.comment)
-					_.stopEditing()
-				}).catch(error => {
-					console.log('error');
-				})										        			
+				
+				axios.post('/comments', _.data).then(function(response){
+					if (response.data.status) {
+						_.comments.unshift(response.data.comment)
+						_.stopEditing()	
+					} else {
+						_.oops = true
+						_.error_text = response.data.messages.text[0]
+					}
+				})					
 			},
 
 			updateComment($event) {

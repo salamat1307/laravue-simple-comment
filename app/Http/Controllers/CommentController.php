@@ -33,7 +33,8 @@ class CommentController extends Controller
 		$validator = validator()->make($data, $rules);
 
 		if($validator->fails()) {
-			return response()->json([				
+			return response()->json([
+				'status' => false,				
 				'messages' => $validator->messages()
 			]);
 		} else {
@@ -41,7 +42,8 @@ class CommentController extends Controller
 			$comment = Comment::create($data);
 			$comment = $comment->load('user');
 
-			return response()->json([				
+			return response()->json([
+				'status'  => true,				
 				'comment' => $comment 
 			]);
 		}
