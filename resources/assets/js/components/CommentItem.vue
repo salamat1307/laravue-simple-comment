@@ -6,7 +6,7 @@
 	      			<v-card>	      					       
 				        <v-card-title primary-title>
 				          <div>
-				            <h3 class="headline mb-0">{{ comment.user.name }}</h3>
+				            <h3>{{ comment.user.name }}</h3>
 				            <div>{{ comment.text }}</div>
 				          </div>
 				        </v-card-title>
